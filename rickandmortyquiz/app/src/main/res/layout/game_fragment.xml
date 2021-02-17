@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="gameViewModel"
+            type="com.android.example.rickandmortyquiz.screens.game.GameViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/game_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/game_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/game_image_desc"
+            android:scaleType="centerCrop"
+            android:src="@drawable/rnm02"
+            app:layout_constraintBottom_toTopOf="@+id/questionScrollView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent=".4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ScrollView
+            android:id="@+id/questionScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/game_image">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/questionText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingStart="@dimen/margin_20dp"
+                    android:paddingTop="@dimen/margin_10dp"
+                    android:paddingEnd="@dimen/margin_20dp"
+                    android:paddingBottom="@dimen/margin_10dp"
+                    android:text="@{context.getText(gameViewModel.question)}"
+                    android:textColor="?attr/colorSecondary"
+                    android:textSize="30sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/right_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/result_image_desc"
+                    android:src="@drawable/right_24"
+                    android:visibility="@{gameViewModel.attempted &amp;&amp; gameViewModel.isCorrect ? View.VISIBLE : View.INVISIBLE}" />
+
+                <ImageView
+                    android:id="@+id/wrong_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/result_image_desc"
+                    android:src="@drawable/wrong_24"
+                    android:visibility="@{gameViewModel.attempted &amp;&amp; !gameViewModel.isCorrect ? View.VISIBLE : View.INVISIBLE}" />
+            </FrameLayout>
+
+        </ScrollView>
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="80dp" />
+
+        <RadioButton
+            android:id="@+id/trueRdoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_20dp"
+            android:checked="@{gameViewModel.checkTrue}"
+            android:enabled="@{!gameViewModel.attempted}"
+            android:onClick="@{() -> gameViewModel.onSelected(true)}"
+            android:text="@string/true_button"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/falseRdoButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/preButton"
+            app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+        <RadioButton
+            android:id="@+id/falseRdoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_20dp"
+            android:checked="@{gameViewModel.checkFalse}"
+            android:enabled="@{!gameViewModel.attempted}"
+            android:onClick="@{() -> gameViewModel.onSelected(false)}"
+            android:text="@string/false_button"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/nextButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/trueRdoButton"
+            app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+        <ImageButton
+            android:id="@+id/preButton"
+            style="@style/gameNavButton"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="@dimen/margin_50dp"
+            android:layout_marginTop="@dimen/margin_5dp"
+            android:background="@android:color/darker_gray"
+            android:backgroundTint="@null"
+            android:src="@drawable/ic_baseline_navigate_before_24"
+            android:onClick="@{() -> gameViewModel.prevQuestion()}"
+            app:layout_constraintEnd_toStartOf="@+id/trueRdoButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/questionScrollView" />
+
+        <ImageButton
+            android:id="@+id/nextButton"
+            style="@style/gameNavButton"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="@dimen/margin_5dp"
+            android:layout_marginEnd="@dimen/margin_50dp"
+            android:background="@android:color/darker_gray"
+            android:backgroundTint="@null"
+            android:src="@drawable/ic_baseline_navigate_next_24"
+            android:onClick="@{() -> gameViewModel.nextQuestion()}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/falseRdoButton"
+            app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+        <TextView
+            android:id="@+id/score_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{gameViewModel.scoreString}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
